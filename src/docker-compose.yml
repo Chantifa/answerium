@@ -1,26 +1,29 @@
 version: "3"
 
 services:
-
   frontend:
     container_name: frontend
     build: ./frontend
     volumes:
-      - ./frontend:/frontend
+      -  answerium-volume:/frontend/
+      - ./frontend:/frontend/
     ports:
-      - 3000:3000
-    working_dir: /frontend
+      - 3003:3003
+    working_dir: /frontend/
+    networks:
+      - mynetwork
     stdin_open: true
     restart: always
-
   backend:
     container_name: backend
     build: ./backend
     volumes:
+      - answerium-volume:/backend/
       - ./backend:/backend
     ports:
       - 8181:8080
-    working_dir: /backend
+    networks:
+      - mynetwork
     environment:
       DB_HOST_NAME: storage
       SPRING_PROFILES_ACTIVE: container
@@ -33,6 +36,8 @@ services:
     build: ./storage
     volumes:
       - postgres-volume:/var/lib/postgresql/data
+    networks:
+      - mynetwork
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
@@ -40,6 +45,43 @@ services:
     ports:
       - 5432:5432
     restart: always
+  grafana:
+    image: grafana/grafana:7.1.5
+    container_name: grafana
+  # Required valid permission for /var/lib/grafana to create files and folders
+  # Since I run from the root so both uid and gid are 0:0
+  # but you can use the command i.e. (id) without brackets to find your user correct numbers
+    user: "0:0"
+    ports:
+      - 3000:3000
+    networks:
+      - mynetwork
+    volumes:
+      - metrics-data:/etc/grafana/datasources/
+      - ./datasources.yml:/etc/grafana/datasources/datasources.yml
+  prom:
+    image: prom/prometheus:v2.20.1
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - mynetwork
+    volumes:
+      - metrics-data:/etc/prometheus/
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
+      # fixed the path here as originally you wrote without /etc
+      # while in above line you are mentioning /etc/ so was causing errors
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - 9100:9100
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
 volumes:
+  answerium-volume:
   postgres-volume:
+  metrics-data:

@@ -4,6 +4,9 @@
 
 ### Eclipse ###
 .metadata
+.idea
+.idea/modules.xml
+.idea/workspace.xml
 bin/
 tmp/
 *.tmp
@@ -14,6 +17,7 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+
 
 # External tool builders
 .externalToolBuilders/
