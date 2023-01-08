@@ -25,7 +25,7 @@ import java.util.UUID;
  */
 
 @Service
-public class SurveyResultService {
+public class SurveyResultService implements ch.ffhs.pa.answerium.common.Service{
     private final SurveyDao surveyDao;
     private final QuestionDao questionDao;
     private final AnswerOptionDao answerOptionDao;
@@ -71,5 +71,9 @@ public class SurveyResultService {
             questionResultResponses.add(questionResultResponse);
         }
         return new SurveyResultResponse(surveyEntity.getSurveyId(), surveySecretId, questionResultResponses);
+    }
+    @Override
+    public UUID getId() {
+        return UUID.randomUUID();
     }
 }

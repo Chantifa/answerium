@@ -20,10 +20,11 @@ import java.util.UUID;
  */
 
 @Service
-public class SurveyCreateService {
+public class SurveyCreateService implements ch.ffhs.pa.answerium.common.Service {
     final SurveyDao surveyDao;
     final QuestionDao questionDao;
     final AnswerOptionDao answerOptionDao;
+
 
     public SurveyCreateService(SurveyDao surveyDao, QuestionDao questionDao, AnswerOptionDao answerOptionDao) {
         this.surveyDao = surveyDao;
@@ -40,23 +41,28 @@ public class SurveyCreateService {
 
     public SurveyResponse createSurvey(SurveyRequest request) {
         Assert.notNull(request, "Request must not be null");
-        UUID surveySecretId = UUID.randomUUID();
-        UUID surveyId = UUID.randomUUID();
+        UUID surveySecretId = getId();
+        UUID surveyId = getId();
 
         SurveyEntity surveyEntity = new SurveyEntity(surveySecretId, surveyId, LocalDate.now());
         surveyDao.save(surveyEntity);
 
         for (QuestionRequest question : request.getQuestions()) {
-            UUID questionId = UUID.randomUUID();
+            UUID questionId = getId();
 
             QuestionEntity questionEntity = new QuestionEntity(surveyEntity, questionId, question.getQuestion(), question.getQuestionType());
             questionDao.save(questionEntity);
 
             for (String answerOption : question.getAnswerOptions()) {
-                UUID answerOptionId = UUID.randomUUID();
+                UUID answerOptionId = getId();
                 answerOptionDao.save(new AnswerOptionEntity(questionEntity, answerOptionId, answerOption));
             }
         }
         return new SurveyResponse(surveySecretId, surveyId);
+    }
+
+    @Override
+    public UUID getId() {
+        return UUID.randomUUID();
     }
 }

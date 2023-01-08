@@ -57,8 +57,8 @@ services:
     networks:
       - mynetwork
     volumes:
-      - metrics-data:/etc/grafana/datasources/
-      - ./datasources.yml:/etc/grafana/datasources/datasources.yml
+      - metrics-data:/etc/grafana/provisioning/datasources/
+      - ./datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
   prom:
     image: prom/prometheus:v2.20.1
     container_name: prometheus

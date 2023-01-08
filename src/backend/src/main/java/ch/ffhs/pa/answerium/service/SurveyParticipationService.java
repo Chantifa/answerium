@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 
 @Service
-public class SurveyParticipationService {
+public class SurveyParticipationService implements ch.ffhs.pa.answerium.common.Service{
     private final ParticipationDao participationDao;
     private final SurveyDao surveyDao;
     private final QuestionDao questionDao;
@@ -85,7 +85,7 @@ public class SurveyParticipationService {
         if (surveyEntity == null) {
             throw new NoSuchElementException("surveyId not found");
         }
-        UUID participationId = UUID.randomUUID();
+        UUID participationId = getId();
         ParticipationEntity participationEntity = new ParticipationEntity(surveyEntity, participationId, LocalDate.now());
         participationDao.save(participationEntity);
 
@@ -95,5 +95,10 @@ public class SurveyParticipationService {
             participationAnswerDao.save(participationAnswerEntity);
         }
         return participationId;
+    }
+
+    @Override
+    public UUID getId() {
+        return UUID.randomUUID();
     }
 }
