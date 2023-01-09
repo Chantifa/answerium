@@ -21,7 +21,7 @@ services:
       - answerium-volume:/backend/
       - ./backend:/backend
     ports:
-      - 8181:8080
+      - 8181:8181
     networks:
       - mynetwork
     environment:
