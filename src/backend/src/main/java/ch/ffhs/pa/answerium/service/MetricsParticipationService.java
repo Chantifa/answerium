@@ -4,7 +4,9 @@ import ch.ffhs.pa.answerium.common.InMemoryRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class MetricsParticipationService extends InMemoryRepository<SurveyParticipationService> {
     private final Counter counter;
 

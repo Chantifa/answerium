@@ -8,7 +8,7 @@ services:
       -  answerium-volume:/frontend/
       - ./frontend:/frontend/
     ports:
-      - 3003:3003
+      - 3000:3000
     working_dir: /frontend/
     networks:
       - mynetwork
@@ -51,9 +51,10 @@ services:
   # Required valid permission for /var/lib/grafana to create files and folders
   # Since I run from the root so both uid and gid are 0:0
   # but you can use the command i.e. (id) without brackets to find your user correct numbers
-    user: "0:0"
+    privileged: true #Required for running docker inside container
+    user: root #Required for running various scripts
     ports:
-      - 3000:3000
+      - 3030:3030
     networks:
       - mynetwork
     volumes:
@@ -62,10 +63,11 @@ services:
   prom:
     image: prom/prometheus:v2.20.1
     container_name: prometheus
+    extra_hosts: ["host.docker.internal:172.28.0.1"] # from Gateway bridge and added /etc/hosts
     ports:
       - 9090:9090
     networks:
-      - mynetwork
+      - answerium
     volumes:
       - metrics-data:/etc/prometheus/
       - ./prometheus.yml:/etc/prometheus/prometheus.yml

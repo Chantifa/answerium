@@ -9,8 +9,8 @@ scrape_configs:
     static_configs:
       - targets: ['prometheus:9090']
 
-  - job_name: answeirum
+  - job_name: answerium
     metrics_path: /actuator/prometheus
-    scrape_interval: 5s
+    scrape_interval: 15s
     static_configs:
-      - targets: ['answerium:3004']
+      - targets: ['backend:8181']
