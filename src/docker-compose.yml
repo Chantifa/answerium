@@ -67,7 +67,7 @@ services:
     ports:
       - 9090:9090
     networks:
-      - answerium
+      - mynetwork
     volumes:
       - metrics-data:/etc/prometheus/
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
