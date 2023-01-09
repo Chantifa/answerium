@@ -4,13 +4,17 @@ import ch.ffhs.pa.answerium.common.QuestionType;
 import ch.ffhs.pa.answerium.dto.QuestionRequest;
 import ch.ffhs.pa.answerium.dto.SurveyRequest;
 import ch.ffhs.pa.answerium.dto.SurveyResponse;
+import ch.ffhs.pa.answerium.service.MetricsSurveyCreateService;
 import ch.ffhs.pa.answerium.service.SurveyCreateService;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.bind.ValidationException;
+
 
 /**
  * Controller class to create the survey.
@@ -22,6 +26,7 @@ import javax.xml.bind.ValidationException;
 public class SurveyCreateController {
 
     private final SurveyCreateService surveyCreateService;
+
 
     @Autowired
     public SurveyCreateController(SurveyCreateService surveyCreateService) {
@@ -39,15 +44,19 @@ public class SurveyCreateController {
 
     @PostMapping
     public ResponseEntity<SurveyResponse> createSurvey(@RequestBody SurveyRequest surveyRequest) throws ValidationException {
+        MeterRegistry register = new SimpleMeterRegistry();
+        MetricsSurveyCreateService metricsSurveyCreateService = new MetricsSurveyCreateService(register);
+        metricsSurveyCreateService.add(surveyCreateService);
         validateNotEmptyListOfQuestions(surveyRequest);
         validateMinimalAnswers(surveyRequest);
         validateNoEmptyStrings(surveyRequest);
+
 
         SurveyResponse surveyResponse = surveyCreateService.createSurvey(surveyRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(surveyResponse);
     }
 
-    private void validateNotEmptyListOfQuestions(SurveyRequest surveyRequest) throws ValidationException {
+      private void validateNotEmptyListOfQuestions(SurveyRequest surveyRequest) throws ValidationException {
         if (surveyRequest.getQuestions().isEmpty()) {
             throw new ValidationException("List of Questions must not be empty!");
         }

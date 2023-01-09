@@ -1,7 +1,11 @@
 package ch.ffhs.pa.answerium.web;
 
 import ch.ffhs.pa.answerium.dto.SurveyResultResponse;
+import ch.ffhs.pa.answerium.service.MetricsParticipationService;
+import ch.ffhs.pa.answerium.service.MetricsSurveyResultService;
 import ch.ffhs.pa.answerium.service.SurveyResultService;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +39,9 @@ public class SurveyResultController {
 
     @GetMapping
     public ResponseEntity<SurveyResultResponse> loadSurveyResult(@PathVariable("surveySecretId") UUID surveySecretId) {
+        MeterRegistry register = new SimpleMeterRegistry();
+        MetricsSurveyResultService metricsSurveyResultService = new MetricsSurveyResultService(register);
+        metricsSurveyResultService.add(surveyResultService);
         SurveyResultResponse surveyResultResponse = surveyResultService.loadSurveyResult(surveySecretId);
         return ResponseEntity.status(HttpStatus.OK).body(surveyResultResponse);
     }

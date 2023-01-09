@@ -2,6 +2,7 @@ package ch.ffhs.pa.answerium.service;
 
 import ch.ffhs.pa.answerium.dto.AnswerOptionResultResponse;
 import ch.ffhs.pa.answerium.dto.QuestionResultResponse;
+import ch.ffhs.pa.answerium.dto.SurveyRequest;
 import ch.ffhs.pa.answerium.dto.SurveyResultResponse;
 import ch.ffhs.pa.answerium.entity.AnswerOptionEntity;
 import ch.ffhs.pa.answerium.entity.ParticipationAnswerEntity;
@@ -11,6 +12,7 @@ import ch.ffhs.pa.answerium.persistence.AnswerOptionDao;
 import ch.ffhs.pa.answerium.persistence.ParticipationAnswerDao;
 import ch.ffhs.pa.answerium.persistence.QuestionDao;
 import ch.ffhs.pa.answerium.persistence.SurveyDao;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -30,6 +32,7 @@ public class SurveyResultService implements ch.ffhs.pa.answerium.common.Service{
     private final QuestionDao questionDao;
     private final AnswerOptionDao answerOptionDao;
     private final ParticipationAnswerDao participationAnswerDao;
+
 
     @Autowired
     public SurveyResultService(SurveyDao surveyDao, QuestionDao questionDao, AnswerOptionDao answerOptionDao, ParticipationAnswerDao participationAnswerDao) {
@@ -76,4 +79,5 @@ public class SurveyResultService implements ch.ffhs.pa.answerium.common.Service{
     public UUID getId() {
         return UUID.randomUUID();
     }
+
 }

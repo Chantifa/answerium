@@ -1,9 +1,6 @@
 package ch.ffhs.pa.answerium.service;
 
-import ch.ffhs.pa.answerium.dto.AnswerOptionResponse;
-import ch.ffhs.pa.answerium.dto.QuestionResponse;
-import ch.ffhs.pa.answerium.dto.ParticipationRequest;
-import ch.ffhs.pa.answerium.dto.ParticipationResponse;
+import ch.ffhs.pa.answerium.dto.*;
 import ch.ffhs.pa.answerium.entity.*;
 import ch.ffhs.pa.answerium.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,4 +98,5 @@ public class SurveyParticipationService implements ch.ffhs.pa.answerium.common.S
     public UUID getId() {
         return UUID.randomUUID();
     }
+
 }

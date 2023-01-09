@@ -40,6 +40,7 @@ public class SurveyCreateService implements ch.ffhs.pa.answerium.common.Service 
      */
 
     public SurveyResponse createSurvey(SurveyRequest request) {
+
         Assert.notNull(request, "Request must not be null");
         UUID surveySecretId = getId();
         UUID surveyId = getId();
@@ -59,6 +60,11 @@ public class SurveyCreateService implements ch.ffhs.pa.answerium.common.Service 
             }
         }
         return new SurveyResponse(surveySecretId, surveyId);
+    }
+
+    public void add(MetricsSurveyCreateService metricsSurveyCreateService){
+        metricsSurveyCreateService.add(SurveyCreateService.this);
+
     }
 
     @Override

@@ -1,5 +1,9 @@
 package ch.ffhs.pa.answerium.common;
 
+import ch.ffhs.pa.answerium.dto.ParticipationRequest;
+import ch.ffhs.pa.answerium.dto.SurveyResultResponse;
+import ch.ffhs.pa.answerium.service.SurveyResultService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +11,7 @@ import java.util.UUID;
 
 public abstract class InMemoryRepository<ServiceType extends Service> {
     protected final List<ServiceType> services = new ArrayList<>();
+
 
     public void add(ServiceType service) {
         services.add(service);
@@ -30,5 +35,4 @@ public abstract class InMemoryRepository<ServiceType extends Service> {
     public void remove(UUID id) {
         services.removeIf(model -> model.getId().equals(id));
     }
-
 }
