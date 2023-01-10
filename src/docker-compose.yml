@@ -2,6 +2,7 @@ version: "3"
 
 services:
   frontend:
+    image: chantifa/src-frontend:latest
     container_name: frontend
     build: ./frontend
     volumes:
@@ -15,6 +16,7 @@ services:
     stdin_open: true
     restart: always
   backend:
+    image: chantifa/src-backend:latest
     container_name: backend
     build: ./backend
     volumes:
@@ -32,6 +34,7 @@ services:
     restart: always
 
   storage:
+    image: chantifa/src-storage:latest
     container_name: storage
     build: ./storage
     volumes:
