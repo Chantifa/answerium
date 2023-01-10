@@ -6,8 +6,6 @@ import ch.ffhs.pa.answerium.dto.SurveyRequest;
 import ch.ffhs.pa.answerium.dto.SurveyResponse;
 import ch.ffhs.pa.answerium.service.MetricsSurveyCreateService;
 import ch.ffhs.pa.answerium.service.SurveyCreateService;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +24,13 @@ import javax.xml.bind.ValidationException;
 public class SurveyCreateController {
 
     private final SurveyCreateService surveyCreateService;
+    private final MetricsSurveyCreateService metricsSurveyCreateService;
 
 
     @Autowired
-    public SurveyCreateController(SurveyCreateService surveyCreateService) {
+    public SurveyCreateController(SurveyCreateService surveyCreateService, MetricsSurveyCreateService metricsSurveyCreateService) {
         this.surveyCreateService = surveyCreateService;
+        this.metricsSurveyCreateService = metricsSurveyCreateService;
     }
 
     /**
@@ -44,8 +44,6 @@ public class SurveyCreateController {
 
     @PostMapping
     public ResponseEntity<SurveyResponse> createSurvey(@RequestBody SurveyRequest surveyRequest) throws ValidationException {
-        MeterRegistry register = new SimpleMeterRegistry();
-        MetricsSurveyCreateService metricsSurveyCreateService = new MetricsSurveyCreateService(register);
         metricsSurveyCreateService.add(surveyCreateService);
         validateNotEmptyListOfQuestions(surveyRequest);
         validateMinimalAnswers(surveyRequest);

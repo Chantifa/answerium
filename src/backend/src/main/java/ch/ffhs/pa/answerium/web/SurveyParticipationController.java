@@ -3,10 +3,7 @@ package ch.ffhs.pa.answerium.web;
 import ch.ffhs.pa.answerium.dto.ParticipationRequest;
 import ch.ffhs.pa.answerium.dto.ParticipationResponse;
 import ch.ffhs.pa.answerium.service.MetricsParticipationService;
-import ch.ffhs.pa.answerium.service.MetricsSurveyCreateService;
 import ch.ffhs.pa.answerium.service.SurveyParticipationService;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +22,12 @@ import java.util.UUID;
 public class SurveyParticipationController {
 
     private final SurveyParticipationService surveyParticipationService;
+    private final MetricsParticipationService metricsParticipationService;
 
     @Autowired
-    public SurveyParticipationController(SurveyParticipationService surveyParticipationService) {
+    public SurveyParticipationController(SurveyParticipationService surveyParticipationService, MetricsParticipationService metricsParticipationService) {
         this.surveyParticipationService = surveyParticipationService;
+        this.metricsParticipationService = metricsParticipationService;
     }
 
     /**
@@ -54,8 +53,6 @@ public class SurveyParticipationController {
 
     @PostMapping("/participation/")
     public ResponseEntity<UUID> addParticipation(@PathVariable("surveyId") UUID surveyId, @RequestBody ParticipationRequest participationRequest) {
-        MeterRegistry register = new SimpleMeterRegistry();
-        MetricsParticipationService metricsParticipationService = new MetricsParticipationService(register);
         metricsParticipationService.add(surveyParticipationService);
         UUID participationId = surveyParticipationService.addParticipation(surveyId, participationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(participationId);

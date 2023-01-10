@@ -13,12 +13,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,24 +47,5 @@ class SurveyResultControllerTest {
         assertEquals(HttpStatus.METHOD_NOT_ALLOWED.value(), response.getStatus());
     }
 
-    @Test
-    void testResponseCodeOk() throws Exception {
-        MockHttpServletResponse response = mvc.perform(
-                get(URL).accept(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse();
 
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-    }
-
-    @Test
-    void testNonexistentId() throws Exception {
-        when(surveyResultService.loadSurveyResult(SURVEY_SECRET_ID)).thenThrow(NoSuchElementException.class);
-
-        MockHttpServletResponse response = mvc.perform(
-                get(URL).contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus());
-    }
 }

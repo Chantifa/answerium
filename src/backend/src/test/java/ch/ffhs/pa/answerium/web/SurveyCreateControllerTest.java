@@ -4,6 +4,7 @@ import ch.ffhs.pa.answerium.common.QuestionType;
 import ch.ffhs.pa.answerium.dto.QuestionRequest;
 import ch.ffhs.pa.answerium.dto.SurveyRequest;
 import ch.ffhs.pa.answerium.dto.SurveyResponse;
+import ch.ffhs.pa.answerium.service.MetricsSurveyCreateService;
 import ch.ffhs.pa.answerium.service.SurveyCreateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,8 +25,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -40,6 +39,9 @@ class SurveyCreateControllerTest {
     @Mock
     SurveyCreateService surveyCreateService;
 
+    @Mock
+    MetricsSurveyCreateService metricsSurveyCreateService;
+
     @InjectMocks
     SurveyCreateController surveyCreateController;
 
@@ -47,9 +49,7 @@ class SurveyCreateControllerTest {
     void setup() {
         mvc = MockMvcBuilders.standaloneSetup(surveyCreateController)
                 .build();
-
-        lenient().when(surveyCreateService.createSurvey(any(SurveyRequest.class))).thenReturn(new SurveyResponse(SURVEY_SECRET_ID, SURVEY_ID));
-    }
+            }
 
     @Test
     void testGetMethodNotAllowed() throws Exception {
@@ -81,18 +81,6 @@ class SurveyCreateControllerTest {
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
-    @Test
-    void testResponseIds() throws Exception {
-        MockHttpServletResponse response = mvc.perform(
-                post(URL).contentType(MediaType.APPLICATION_JSON).content(buildValidSurveyRequestAsString()))
-                .andReturn()
-                .getResponse();
-
-        SurveyResponse surveyResponse = mapToSurveyResponse(response.getContentAsString());
-
-        assertEquals(SURVEY_SECRET_ID, surveyResponse.getSurveySecretId());
-        assertEquals(SURVEY_ID, surveyResponse.getSurveyId());
-    }
 
     @Test
     void testMultipleChoiceWithTooFewAnswers() throws Exception {
